@@ -101,7 +101,7 @@ namespace WatermarkGenerator
             FillRoundRectangle(g, new SolidBrush(Color.FromArgb(176, Color.GhostWhite)), whiteRect, (img.Width / 2) / 14, false);
 
             int coefficient = 0;
-            string viewStr = string.Format("{0}{1}{2}", lblFloor.Text, tbConstructionArea.Text.Trim() + floorNumber + tbHomeNumber.Text.Trim(), Environment.NewLine);
+            string viewStr = string.Format("{0}{1}{2}", lblConstructionArea.Text, tbConstructionArea.Text.Trim() + floorNumber + tbHomeNumber.Text.Trim(), Environment.NewLine);
             viewStr = viewStr.Length > 18 ? viewStr.Insert(17, "\r\n          ") : viewStr;
 
             g.DrawString(viewStr, new Font("黑体", whiteRect.Width / 21), Brushes.Black, blueRect.Width / 7, whiteRect.Y + blueRect.Height / 4);
@@ -161,7 +161,7 @@ namespace WatermarkGenerator
                 bitmap.Save(savePath);
                 progress.Invoke(new Action(delegate
                 {
-                    progress.RefreshView(i + 1, floorCount, this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height);
+                    progress.RefreshView(i + 1, floorCount + 1, this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height);
                 }));
                 startFloor++;
             }
