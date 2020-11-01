@@ -25,6 +25,7 @@ namespace WatermarkGenerator
             img = pbImgView.Image;
             tbConstructionArea.SelectAll();
             tbEndFloor.LostFocus += TextLostFocus;
+            tbHomeNumber.LostFocus += TextLostFocus;
         }
 
         private void TextLostFocus(object sender, EventArgs e)
@@ -32,9 +33,17 @@ namespace WatermarkGenerator
             TextBox tb = (TextBox)sender;
             if (tb.Name.Equals("tbEndFloor"))
             {
-                if (!(int.Parse(tb.Text) >= int.Parse(tbStartFloor.Text)))
+                if (!(int.Parse(tb.Text.Trim()) >= int.Parse(tbStartFloor.Text.Trim())))
                 {
-                    tb.Text = tbStartFloor.Text;
+                    tb.Text = tbStartFloor.Text.Trim();
+                }
+            }
+
+            if (tb.Name.Equals("tbHomeNumber"))
+            {
+                if (string.IsNullOrWhiteSpace(tb.Text.Trim()))
+                {
+                    tb.Text = "01";
                 }
             }
         }
@@ -42,7 +51,7 @@ namespace WatermarkGenerator
         private new void TextChanged(object sender, EventArgs e)
         {
             TextBox tb = (TextBox)sender;
-            if (!int.TryParse(tb.Text, out int floorNumber))
+            if (!int.TryParse(tb.Text.Trim(), out int floorNumber))
             {
                 tb.Text = "1";
             }
@@ -67,7 +76,7 @@ namespace WatermarkGenerator
 
         private void btnView_Click(object sender, EventArgs e)
         {
-            bitmap = DrawWaterMark(tbStartFloor.Text);
+            bitmap = DrawWaterMark(tbStartFloor.Text.Trim());
             pbImgView.Image = bitmap;
         }
 
@@ -92,8 +101,8 @@ namespace WatermarkGenerator
             FillRoundRectangle(g, new SolidBrush(Color.FromArgb(176, Color.GhostWhite)), whiteRect, (img.Width / 2) / 14, false);
 
             int coefficient = 0;
-            string viewStr = string.Format("{0}{1}{2}", lblConstructionArea.Text, tbConstructionArea.Text + floorNumber, Environment.NewLine);
-            viewStr = viewStr.Length > 18 ? viewStr.Insert(17, "\r\n") : viewStr;
+            string viewStr = string.Format("{0}{1}{2}", lblFloor.Text, tbConstructionArea.Text.Trim() + floorNumber + tbHomeNumber.Text.Trim(), Environment.NewLine);
+            viewStr = viewStr.Length > 18 ? viewStr.Insert(17, "\r\n          ") : viewStr;
 
             g.DrawString(viewStr, new Font("黑体", whiteRect.Width / 21), Brushes.Black, blueRect.Width / 7, whiteRect.Y + blueRect.Height / 4);
 
@@ -102,8 +111,8 @@ namespace WatermarkGenerator
                 coefficient++;
             }
 
-            viewStr = string.Format("{0}{1}{2}", lblLocation.Text, tbLocation.Text, Environment.NewLine);
-            viewStr = viewStr.Length > 18 ? viewStr.Insert(17, "\r\n") : viewStr;
+            viewStr = string.Format("{0}{1}{2}", lblLocation.Text, tbLocation.Text.Trim(), Environment.NewLine);
+            viewStr = viewStr.Length > 18 ? viewStr.Insert(17, "\r\n          ") : viewStr;
 
             g.DrawString(viewStr, new Font("黑体", whiteRect.Width / 21), Brushes.Black, blueRect.Width / 7, whiteRect.Y + blueRect.Height / 4 + ((whiteRect.Width / 21) * (2 + coefficient)));
 
@@ -112,8 +121,8 @@ namespace WatermarkGenerator
                 coefficient++;
             }
 
-            viewStr = string.Format("{0}{1}{2}", lblRemarks.Text, tbRemarks.Text, Environment.NewLine);
-            viewStr = viewStr.Length > 18 ? viewStr.Insert(17, "\r\n") : viewStr;
+            viewStr = string.Format("{0}{1}{2}", lblRemarks.Text, tbRemarks.Text.Trim(), Environment.NewLine);
+            viewStr = viewStr.Length > 18 ? viewStr.Insert(17, "\r\n          ") : viewStr;
 
             g.DrawString(viewStr, new Font("黑体", whiteRect.Width / 21), Brushes.Black, blueRect.Width / 7, whiteRect.Y + blueRect.Height / 4 + ((whiteRect.Width / 21) * (4 + coefficient)));
 
@@ -127,10 +136,11 @@ namespace WatermarkGenerator
         {
             frmProgress progress = new frmProgress();
             progress.Show();
-            int startFloor = int.Parse(tbStartFloor.Text);
-            int endFloor = int.Parse(tbEndFloor.Text);
+            int startFloor = int.Parse(tbStartFloor.Text.Trim());
+            int endFloor = int.Parse(tbEndFloor.Text.Trim());
             int floorCount = endFloor - startFloor;
             Random random = new Random();
+            string homeNumber = tbHomeNumber.Text.Trim();
             for (int i = 0; i <= floorCount; i++)
             {
                 int currentFloorNumber = startFloor;
@@ -138,7 +148,7 @@ namespace WatermarkGenerator
                 int fileNumber = random.Next(0, fileInfo.Length - 1);
                 img = Image.FromFile(fileInfo[fileNumber].FullName);
                 Application.DoEvents();
-                bitmap = DrawWaterMark(tbStartFloor.Text);
+                bitmap = DrawWaterMark(currentFloorNumber.ToString());
                 if (File.Exists(savePath))
                 {
                     File.Delete(savePath);
@@ -147,7 +157,7 @@ namespace WatermarkGenerator
                 {
                     Directory.CreateDirectory(savePath);
                 }
-                savePath += startFloor + strExt;
+                savePath += startFloor + homeNumber + strExt;
                 bitmap.Save(savePath);
                 progress.Invoke(new Action(delegate
                 {

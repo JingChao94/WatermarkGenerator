@@ -21,7 +21,7 @@ namespace WatermarkGenerator
         {
             this.Bounds = new Rectangle(x + (w / 3), y + (h / 3), this.Width, this.Height);
             progressBar1.Maximum = count * 10;
-            label1.Text = string.Format(label1.Text, currentNumber, count);
+            lblMsg.Text = string.Format("保存中,{0}/{1}", currentNumber, count);
             progressBar1.PerformStep();
         }
     }
