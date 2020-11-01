@@ -42,6 +42,8 @@
             this.tbStartFloor = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tbEndFloor = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.tbHomeNumber = new System.Windows.Forms.TextBox();
             this.lblLocation = new System.Windows.Forms.Label();
             this.tbLocation = new System.Windows.Forms.TextBox();
             this.lblRemarks = new System.Windows.Forms.Label();
@@ -51,8 +53,7 @@
             this.btnLoadImg = new System.Windows.Forms.Button();
             this.btnView = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tbHomeNumber = new System.Windows.Forms.TextBox();
+            this.cbWorkArea = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -97,12 +98,13 @@
             this.groupBox2.Size = new System.Drawing.Size(740, 543);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "预览区";
+            this.groupBox2.Text = "样品展示";
             // 
             // pbImgView
             // 
             this.pbImgView.BackColor = System.Drawing.SystemColors.Desktop;
             this.pbImgView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbImgView.Image = global::WatermarkGenerator.Properties.Resources._203;
             this.pbImgView.Location = new System.Drawing.Point(3, 25);
             this.pbImgView.Name = "pbImgView";
             this.pbImgView.Size = new System.Drawing.Size(734, 515);
@@ -145,6 +147,7 @@
             // 
             this.flowLayoutPanel1.Controls.Add(this.lblConstructionArea);
             this.flowLayoutPanel1.Controls.Add(this.tbConstructionArea);
+            this.flowLayoutPanel1.Controls.Add(this.cbWorkArea);
             this.flowLayoutPanel1.Controls.Add(this.lblFloor);
             this.flowLayoutPanel1.Controls.Add(this.tbStartFloor);
             this.flowLayoutPanel1.Controls.Add(this.label2);
@@ -177,14 +180,14 @@
             this.tbConstructionArea.Location = new System.Drawing.Point(8, 42);
             this.tbConstructionArea.Multiline = true;
             this.tbConstructionArea.Name = "tbConstructionArea";
-            this.tbConstructionArea.Size = new System.Drawing.Size(252, 54);
+            this.tbConstructionArea.Size = new System.Drawing.Size(255, 29);
             this.tbConstructionArea.TabIndex = 9;
-            this.tbConstructionArea.Text = "113号465外墙";
+            this.tbConstructionArea.Text = "测试小区38栋";
             // 
             // lblFloor
             // 
             this.lblFloor.AutoSize = true;
-            this.lblFloor.Location = new System.Drawing.Point(8, 104);
+            this.lblFloor.Location = new System.Drawing.Point(8, 117);
             this.lblFloor.Margin = new System.Windows.Forms.Padding(3, 5, 3, 10);
             this.lblFloor.Name = "lblFloor";
             this.lblFloor.Size = new System.Drawing.Size(111, 19);
@@ -193,7 +196,7 @@
             // 
             // tbStartFloor
             // 
-            this.tbStartFloor.Location = new System.Drawing.Point(125, 102);
+            this.tbStartFloor.Location = new System.Drawing.Point(125, 115);
             this.tbStartFloor.Name = "tbStartFloor";
             this.tbStartFloor.Size = new System.Drawing.Size(53, 29);
             this.tbStartFloor.TabIndex = 3;
@@ -203,7 +206,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(184, 107);
+            this.label2.Location = new System.Drawing.Point(184, 120);
             this.label2.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(20, 19);
@@ -212,17 +215,36 @@
             // 
             // tbEndFloor
             // 
-            this.tbEndFloor.Location = new System.Drawing.Point(210, 102);
+            this.tbEndFloor.Location = new System.Drawing.Point(210, 115);
             this.tbEndFloor.Name = "tbEndFloor";
             this.tbEndFloor.Size = new System.Drawing.Size(53, 29);
             this.tbEndFloor.TabIndex = 11;
             this.tbEndFloor.Text = "9";
             this.tbEndFloor.TextChanged += new System.EventHandler(this.TextChanged);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(8, 152);
+            this.label1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 10);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(100, 19);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "房间编号:";
+            // 
+            // tbHomeNumber
+            // 
+            this.tbHomeNumber.Location = new System.Drawing.Point(126, 150);
+            this.tbHomeNumber.Margin = new System.Windows.Forms.Padding(15, 3, 3, 3);
+            this.tbHomeNumber.Name = "tbHomeNumber";
+            this.tbHomeNumber.Size = new System.Drawing.Size(134, 29);
+            this.tbHomeNumber.TabIndex = 14;
+            this.tbHomeNumber.Text = "03";
+            // 
             // lblLocation
             // 
             this.lblLocation.AutoSize = true;
-            this.lblLocation.Location = new System.Drawing.Point(8, 174);
+            this.lblLocation.Location = new System.Drawing.Point(8, 187);
             this.lblLocation.Margin = new System.Windows.Forms.Padding(3, 5, 3, 10);
             this.lblLocation.Name = "lblLocation";
             this.lblLocation.Size = new System.Drawing.Size(115, 19);
@@ -231,7 +253,7 @@
             // 
             // tbLocation
             // 
-            this.tbLocation.Location = new System.Drawing.Point(8, 206);
+            this.tbLocation.Location = new System.Drawing.Point(8, 219);
             this.tbLocation.Multiline = true;
             this.tbLocation.Name = "tbLocation";
             this.tbLocation.Size = new System.Drawing.Size(252, 54);
@@ -241,7 +263,7 @@
             // lblRemarks
             // 
             this.lblRemarks.AutoSize = true;
-            this.lblRemarks.Location = new System.Drawing.Point(8, 268);
+            this.lblRemarks.Location = new System.Drawing.Point(8, 281);
             this.lblRemarks.Margin = new System.Windows.Forms.Padding(3, 5, 3, 10);
             this.lblRemarks.Name = "lblRemarks";
             this.lblRemarks.Size = new System.Drawing.Size(111, 19);
@@ -251,9 +273,9 @@
             // panel3
             // 
             this.panel3.Controls.Add(this.tbRemarks);
-            this.panel3.Location = new System.Drawing.Point(8, 300);
+            this.panel3.Location = new System.Drawing.Point(8, 313);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(264, 70);
+            this.panel3.Size = new System.Drawing.Size(255, 60);
             this.panel3.TabIndex = 12;
             // 
             // tbRemarks
@@ -262,7 +284,7 @@
             this.tbRemarks.Location = new System.Drawing.Point(0, 0);
             this.tbRemarks.Multiline = true;
             this.tbRemarks.Name = "tbRemarks";
-            this.tbRemarks.Size = new System.Drawing.Size(264, 70);
+            this.tbRemarks.Size = new System.Drawing.Size(255, 60);
             this.tbRemarks.TabIndex = 8;
             this.tbRemarks.Text = "防水防电";
             // 
@@ -287,6 +309,7 @@
             this.btnLoadImg.TabIndex = 0;
             this.btnLoadImg.Text = "载入";
             this.btnLoadImg.UseVisualStyleBackColor = true;
+            this.btnLoadImg.Visible = false;
             this.btnLoadImg.Click += new System.EventHandler(this.btnLoadImg_Click);
             // 
             // btnView
@@ -299,11 +322,11 @@
             this.btnView.TabIndex = 1;
             this.btnView.Text = "预览";
             this.btnView.UseVisualStyleBackColor = true;
+            this.btnView.Visible = false;
             this.btnView.Click += new System.EventHandler(this.btnView_Click);
             // 
             // btnSave
             // 
-            this.btnSave.Enabled = false;
             this.btnSave.Location = new System.Drawing.Point(179, 23);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(65, 95);
@@ -312,24 +335,21 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // label1
+            // cbWorkArea
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 139);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 19);
-            this.label1.TabIndex = 13;
-            this.label1.Text = "房间编号:";
-            // 
-            // tbHomeNumber
-            // 
-            this.tbHomeNumber.Location = new System.Drawing.Point(126, 137);
-            this.tbHomeNumber.Margin = new System.Windows.Forms.Padding(15, 3, 3, 3);
-            this.tbHomeNumber.Name = "tbHomeNumber";
-            this.tbHomeNumber.Size = new System.Drawing.Size(134, 29);
-            this.tbHomeNumber.TabIndex = 14;
-            this.tbHomeNumber.Text = "03";
+            this.cbWorkArea.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbWorkArea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbWorkArea.FormattingEnabled = true;
+            this.cbWorkArea.Items.AddRange(new object[] {
+            "公卫",
+            "阳台",
+            "主卫",
+            "小阳台"});
+            this.cbWorkArea.Location = new System.Drawing.Point(8, 77);
+            this.cbWorkArea.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+            this.cbWorkArea.Name = "cbWorkArea";
+            this.cbWorkArea.Size = new System.Drawing.Size(252, 27);
+            this.cbWorkArea.TabIndex = 15;
             // 
             // WaterMarkGenerator
             // 
@@ -383,6 +403,7 @@
         private System.Windows.Forms.TextBox tbRemarks;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbHomeNumber;
+        private System.Windows.Forms.ComboBox cbWorkArea;
     }
 }
 

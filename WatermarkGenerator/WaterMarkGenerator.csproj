@@ -95,6 +95,7 @@
     <None Include="Resources\Chrysanthemum.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\203.jpg" />
     <Content Include="WaterMark.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

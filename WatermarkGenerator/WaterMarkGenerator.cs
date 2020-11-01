@@ -14,7 +14,7 @@ namespace WatermarkGenerator
 {
     public partial class WaterMarkGenerator : Form
     {
-        private string strSavePath = string.Empty, strExt = string.Empty;
+        private string strSavePath = string.Empty, strExt = ".jpg";
         private Image img;
         private Bitmap bitmap;
         private FileInfo[] fileInfo;
@@ -24,6 +24,7 @@ namespace WatermarkGenerator
             InitializeComponent();
             img = pbImgView.Image;
             tbConstructionArea.SelectAll();
+            cbWorkArea.SelectedIndex = 0;
             tbEndFloor.LostFocus += TextLostFocus;
             tbHomeNumber.LostFocus += TextLostFocus;
         }
@@ -90,18 +91,32 @@ namespace WatermarkGenerator
             Bitmap bitmap = new Bitmap(img);
             Graphics g = Graphics.FromImage(bitmap);
 
+            int imgWidth = img.Width;
+            int imgHeight = img.Height;
+            if (imgWidth > imgHeight)
+            {
+                int temp = imgWidth;
+                imgWidth = imgHeight;
+                imgHeight = temp;
+            }
             //蓝色区域
-            Rectangle blueRect = new Rectangle(img.Width / 19, img.Height - (img.Height / 4) - (img.Height / 35), img.Width / 2, ((img.Height / 5) / 4) * 1);
-            FillRoundRectangle(g, new SolidBrush(Color.FromArgb(176, 0, 0, 255)), blueRect, (img.Width / 2) / 14, true);
+            int blueRectX = imgWidth / 19;
+            int blueRectY = imgHeight - imgHeight / 4 - imgHeight / 35;
+            int blueRectWidth = imgWidth / 2;
+            int blueRectHeight = (imgHeight / 5 / 4) * 1;
+            Rectangle blueRect = new Rectangle(blueRectX, blueRectY, blueRectWidth, blueRectHeight);
+            FillRoundRectangle(g, new SolidBrush(Color.FromArgb(176, 0, 0, 255)), blueRect, blueRectWidth / 14, true);
 
             g.DrawString("工程记录", new Font("黑体", blueRect.Width / 15), Brushes.White, (float)(blueRect.Width / 2.5), blueRect.Y + blueRect.Height / 4);
 
             //白色区域
-            Rectangle whiteRect = new Rectangle(img.Width / 19, (img.Height - (img.Height / 4) - (img.Height / 35)) + ((img.Height / 5) / 4) * 1, img.Width / 2, ((img.Height / 5) / 4) * 3);
-            FillRoundRectangle(g, new SolidBrush(Color.FromArgb(176, Color.GhostWhite)), whiteRect, (img.Width / 2) / 14, false);
+            int whiteRectY = blueRectY + (imgHeight / 5 / 4) * 1;
+            int whiteRectHeight = (imgHeight / 5 / 4) * 3;
+            Rectangle whiteRect = new Rectangle(blueRectX, whiteRectY, blueRectWidth, whiteRectHeight);
+            FillRoundRectangle(g, new SolidBrush(Color.FromArgb(176, Color.GhostWhite)), whiteRect, blueRectWidth / 14, false);
 
             int coefficient = 0;
-            string viewStr = string.Format("{0}{1}{2}", lblConstructionArea.Text, tbConstructionArea.Text.Trim() + floorNumber + tbHomeNumber.Text.Trim(), Environment.NewLine);
+            string viewStr = string.Format("{0}{1}{2}", lblConstructionArea.Text, tbConstructionArea.Text.Trim() + floorNumber + tbHomeNumber.Text.Trim() + cbWorkArea.Text, Environment.NewLine);
             viewStr = viewStr.Length > 18 ? viewStr.Insert(17, "\r\n          ") : viewStr;
 
             g.DrawString(viewStr, new Font("黑体", whiteRect.Width / 21), Brushes.Black, blueRect.Width / 7, whiteRect.Y + blueRect.Height / 4);
@@ -127,13 +142,22 @@ namespace WatermarkGenerator
             g.DrawString(viewStr, new Font("黑体", whiteRect.Width / 21), Brushes.Black, blueRect.Width / 7, whiteRect.Y + blueRect.Height / 4 + ((whiteRect.Width / 21) * (4 + coefficient)));
 
             //黄色圆点
-            g.FillEllipse(Brushes.Yellow, new Rectangle(img.Width / 13, (img.Height - (img.Height / 4) - (img.Height / 60)), (img.Width / 2) / 25, (img.Width / 2) / 25));
+            g.FillEllipse(Brushes.Yellow, new Rectangle(imgWidth / 13, imgHeight - imgHeight / 4 - imgHeight / 60, blueRectWidth / 25, blueRectWidth / 25));
             g.Dispose();
             return bitmap;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            //按下确定选择的按钮  
+            if (folderDialog.ShowDialog() == DialogResult.OK)
+            {
+                InitFileList();
+                //记录选中的目录 
+                strSavePath = folderDialog.SelectedPath + "\\";
+            }
+            else { return; }
             frmProgress progress = new frmProgress();
             progress.Show();
             int startFloor = int.Parse(tbStartFloor.Text.Trim());
@@ -167,6 +191,13 @@ namespace WatermarkGenerator
             }
             progress.Close();
             //pbImgView.Image.Save(strSavePath);
+        }
+
+        private void InitFileList()
+        {
+            strSavePath = string.Format("{0}\\PIC\\{1}\\", Application.StartupPath, cbWorkArea.Text);
+            DirectoryInfo directoryInfo = Directory.CreateDirectory(strSavePath);
+            fileInfo = directoryInfo.GetFiles();
         }
 
         private void FillRoundRectangle(Graphics g, Brush brush, Rectangle rect, int cornerRadius, bool radiusIsTop)
