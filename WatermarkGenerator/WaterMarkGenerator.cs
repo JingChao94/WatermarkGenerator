@@ -25,9 +25,9 @@ namespace WatermarkGenerator
             InitializeComponent();
             img = pbImgView.Image;
             tbConstructionArea.SelectAll();
-            cbWorkArea.SelectedIndex = 0;
             tbEndFloor.LostFocus += TextLostFocus;
             tbHomeNumber.LostFocus += TextLostFocus;
+            tbWorkArea.LostFocus += TextLostFocus;
         }
 
         private void TextLostFocus(object sender, EventArgs e)
@@ -46,6 +46,20 @@ namespace WatermarkGenerator
                 if (string.IsNullOrWhiteSpace(tb.Text.Trim()))
                 {
                     tb.Text = "01";
+                }
+            }
+
+            if (tb.Name.Equals("tbWorkArea"))
+            {
+                if (string.IsNullOrWhiteSpace(tb.Text.Trim()))
+                {
+                    tb.Text = "公卫";
+                }
+                strSavePath = string.Format("{0}\\PIC\\{1}\\", Application.StartupPath, tbWorkArea.Text);
+                if (!Directory.Exists(strSavePath))
+                {
+                    MessageBox.Show(string.Format("{0}目录未创建.", tbWorkArea.Text));
+                    tbWorkArea.Focus();
                 }
             }
         }
@@ -128,7 +142,7 @@ namespace WatermarkGenerator
             FillRoundRectangle(g, new SolidBrush(Color.FromArgb(176, Color.GhostWhite)), whiteRect, blueRectWidth / 14, false);
 
             int coefficient = 0;
-            string viewStr = string.Format("{0}{1}{2}", lblConstructionArea.Text, tbConstructionArea.Text.Trim() + floorNumber + tbHomeNumber.Text.Trim() + cbWorkArea.Text, Environment.NewLine);
+            string viewStr = string.Format("{0}{1}{2}", lblConstructionArea.Text, tbConstructionArea.Text.Trim() + floorNumber + tbHomeNumber.Text.Trim() + tbWorkArea.Text, Environment.NewLine);
             viewStr = viewStr.Length > 18 ? viewStr.Insert(17, "\r\n          ") : viewStr;
 
             g.DrawString(viewStr, new Font("黑体", whiteRect.Width / 21), Brushes.Black, blueRect.Width / 7, whiteRect.Y + blueRect.Height / 4);
@@ -161,6 +175,7 @@ namespace WatermarkGenerator
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            btnSave.Enabled = false;
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
             //按下确定选择的按钮  
             if (folderDialog.ShowDialog() == DialogResult.OK)
@@ -169,7 +184,11 @@ namespace WatermarkGenerator
                 //记录选中的目录 
                 strSavePath = folderDialog.SelectedPath + "\\";
             }
-            else { return; }
+            else
+            {
+                btnSave.Enabled = true;
+                return;
+            }
             frmProgress progress = new frmProgress();
             progress.Show();
             int startFloor = int.Parse(tbStartFloor.Text.Trim());
@@ -204,12 +223,14 @@ namespace WatermarkGenerator
                     }));
                     startFloor++;
                 }
-                catch (Exception ex)
+                catch
                 {
-                    MessageBox.Show("保存出错,请重试","异常", MessageBoxButtons.OK);
+                    int fileNumber = random.Next(0, fileInfo.Length - 1);
+                    img = Image.FromFile(fileInfo[fileNumber].FullName);
                 }
             }
             progress.Close();
+            btnSave.Enabled = true;
             //pbImgView.Image.Save(strSavePath);
         }
 
@@ -353,7 +374,7 @@ namespace WatermarkGenerator
 
         private void InitFileList()
         {
-            strSavePath = string.Format("{0}\\PIC\\{1}\\", Application.StartupPath, cbWorkArea.Text);
+            strSavePath = string.Format("{0}\\PIC\\{1}\\", Application.StartupPath, tbWorkArea.Text);
             DirectoryInfo directoryInfo = Directory.CreateDirectory(strSavePath);
             fileInfo = directoryInfo.GetFiles();
         }
