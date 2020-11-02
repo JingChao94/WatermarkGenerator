@@ -38,6 +38,7 @@
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblConstructionArea = new System.Windows.Forms.Label();
             this.tbConstructionArea = new System.Windows.Forms.TextBox();
+            this.cbWorkArea = new System.Windows.Forms.ComboBox();
             this.lblFloor = new System.Windows.Forms.Label();
             this.tbStartFloor = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -53,7 +54,6 @@
             this.btnLoadImg = new System.Windows.Forms.Button();
             this.btnView = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.cbWorkArea = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -183,6 +183,22 @@
             this.tbConstructionArea.Size = new System.Drawing.Size(255, 29);
             this.tbConstructionArea.TabIndex = 9;
             this.tbConstructionArea.Text = "测试小区38栋";
+            // 
+            // cbWorkArea
+            // 
+            this.cbWorkArea.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbWorkArea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbWorkArea.FormattingEnabled = true;
+            this.cbWorkArea.Items.AddRange(new object[] {
+            "公卫",
+            "阳台",
+            "主卫",
+            "小阳台"});
+            this.cbWorkArea.Location = new System.Drawing.Point(8, 77);
+            this.cbWorkArea.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+            this.cbWorkArea.Name = "cbWorkArea";
+            this.cbWorkArea.Size = new System.Drawing.Size(252, 27);
+            this.cbWorkArea.TabIndex = 15;
             // 
             // lblFloor
             // 
@@ -334,22 +350,6 @@
             this.btnSave.Text = "保存";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // cbWorkArea
-            // 
-            this.cbWorkArea.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cbWorkArea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbWorkArea.FormattingEnabled = true;
-            this.cbWorkArea.Items.AddRange(new object[] {
-            "公卫",
-            "阳台",
-            "主卫",
-            "小阳台"});
-            this.cbWorkArea.Location = new System.Drawing.Point(8, 77);
-            this.cbWorkArea.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
-            this.cbWorkArea.Name = "cbWorkArea";
-            this.cbWorkArea.Size = new System.Drawing.Size(252, 27);
-            this.cbWorkArea.TabIndex = 15;
             // 
             // WaterMarkGenerator
             // 

@@ -93,25 +93,29 @@ namespace WatermarkGenerator
 
             int imgWidth = img.Width;
             int imgHeight = img.Height;
-            if (imgWidth > imgHeight)
-            {
-                int temp = imgWidth;
-                imgWidth = imgHeight;
-                imgHeight = temp;
-            }
             //蓝色区域
             int blueRectX = imgWidth / 19;
-            int blueRectY = imgHeight - imgHeight / 4 - imgHeight / 35;
+            int blueRectY = imgHeight - imgHeight / 4 - imgHeight / 20;
             int blueRectWidth = imgWidth / 2;
             int blueRectHeight = (imgHeight / 5 / 4) * 1;
+            if (imgWidth > imgHeight)
+            {
+                blueRectWidth = imgHeight / 2;
+                blueRectHeight = (imgWidth / 2 / 9) * 1;
+            }
             Rectangle blueRect = new Rectangle(blueRectX, blueRectY, blueRectWidth, blueRectHeight);
             FillRoundRectangle(g, new SolidBrush(Color.FromArgb(176, 0, 0, 255)), blueRect, blueRectWidth / 14, true);
 
-            g.DrawString("工程记录", new Font("黑体", blueRect.Width / 15), Brushes.White, (float)(blueRect.Width / 2.5), blueRect.Y + blueRect.Height / 4);
+            g.DrawString("工程记录", new Font("黑体", blueRect.Width / 15), Brushes.White, (float)(blueRect.Width / 2.5), blueRect.Y + blueRect.Height / 5);
 
             //白色区域
             int whiteRectY = blueRectY + (imgHeight / 5 / 4) * 1;
             int whiteRectHeight = (imgHeight / 5 / 4) * 3;
+            if (imgWidth > imgHeight)
+            {
+                whiteRectY = blueRectY + (imgWidth / 2 / 9) * 1;
+                whiteRectHeight = (imgHeight / 2 / 9) * 4;
+            }
             Rectangle whiteRect = new Rectangle(blueRectX, whiteRectY, blueRectWidth, whiteRectHeight);
             FillRoundRectangle(g, new SolidBrush(Color.FromArgb(176, Color.GhostWhite)), whiteRect, blueRectWidth / 14, false);
 
@@ -239,7 +243,7 @@ namespace WatermarkGenerator
             else
             {
                 roundedRect.AddLine(rect.Right - cornerRadius * 2, rect.Bottom, rect.X + cornerRadius * 2, rect.Bottom);
-                roundedRect.AddLine(rect.X, rect.Y + cornerRadius * 3, rect.X, rect.Y + rect.Height);
+                roundedRect.AddLine(rect.X, rect.Y + rect.Height, rect.X, rect.Y + rect.Height);//顶部左下角补齐
             }
 
             if (!radiusIsTop)
