@@ -38,6 +38,7 @@
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblConstructionArea = new System.Windows.Forms.Label();
             this.tbConstructionArea = new System.Windows.Forms.TextBox();
+            this.tbWorkArea = new System.Windows.Forms.TextBox();
             this.lblFloor = new System.Windows.Forms.Label();
             this.tbStartFloor = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -53,7 +54,6 @@
             this.btnLoadImg = new System.Windows.Forms.Button();
             this.btnView = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.tbWorkArea = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -183,6 +183,15 @@
             this.tbConstructionArea.Size = new System.Drawing.Size(255, 29);
             this.tbConstructionArea.TabIndex = 9;
             this.tbConstructionArea.Text = "测试小区38栋";
+            // 
+            // tbWorkArea
+            // 
+            this.tbWorkArea.Location = new System.Drawing.Point(8, 77);
+            this.tbWorkArea.Multiline = true;
+            this.tbWorkArea.Name = "tbWorkArea";
+            this.tbWorkArea.Size = new System.Drawing.Size(255, 29);
+            this.tbWorkArea.TabIndex = 16;
+            this.tbWorkArea.Text = "公卫";
             // 
             // lblFloor
             // 
@@ -334,15 +343,6 @@
             this.btnSave.Text = "保存";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // tbWorkArea
-            // 
-            this.tbWorkArea.Location = new System.Drawing.Point(8, 77);
-            this.tbWorkArea.Multiline = true;
-            this.tbWorkArea.Name = "tbWorkArea";
-            this.tbWorkArea.Size = new System.Drawing.Size(255, 29);
-            this.tbWorkArea.TabIndex = 16;
-            this.tbWorkArea.Text = "公卫";
             // 
             // WaterMarkGenerator
             // 
