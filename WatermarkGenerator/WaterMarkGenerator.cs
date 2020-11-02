@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -90,6 +91,13 @@ namespace WatermarkGenerator
         {
             Bitmap bitmap = new Bitmap(img);
             Graphics g = Graphics.FromImage(bitmap);
+            //设置质量
+            g.SmoothingMode = SmoothingMode.HighQuality;
+            g.CompositingQuality = CompositingQuality.HighQuality;
+            //InterpolationMode不能使用High或者HighQualityBicubic,如果是灰色或者部分浅色的图像是会在边缘处出一白色透明的线
+            //用HighQualityBilinear却会使图片比其他两种模式模糊（需要肉眼仔细对比才可以看出）
+            g.InterpolationMode = InterpolationMode.Default;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
             int imgWidth = img.Width;
             int imgHeight = img.Height;
@@ -171,30 +179,176 @@ namespace WatermarkGenerator
             string homeNumber = tbHomeNumber.Text.Trim();
             for (int i = 0; i <= floorCount; i++)
             {
-                int currentFloorNumber = startFloor;
-                string savePath = strSavePath + "Mark\\";
-                int fileNumber = random.Next(0, fileInfo.Length - 1);
-                img = Image.FromFile(fileInfo[fileNumber].FullName);
-                Application.DoEvents();
-                bitmap = DrawWaterMark(currentFloorNumber.ToString());
-                if (File.Exists(savePath))
+                try
                 {
-                    File.Delete(savePath);
+                    int currentFloorNumber = startFloor;
+                    string savePath = strSavePath + "Mark\\";
+                    int fileNumber = random.Next(0, fileInfo.Length - 1);
+                    img = Image.FromFile(fileInfo[fileNumber].FullName);
+                    Application.DoEvents();
+                    bitmap = DrawWaterMark(currentFloorNumber.ToString());
+                    if (File.Exists(savePath))
+                    {
+                        File.Delete(savePath);
+                    }
+                    if (!Directory.Exists(savePath))
+                    {
+                        Directory.CreateDirectory(savePath);
+                    }
+                    savePath += startFloor + homeNumber + strExt;
+                    SaveImage2File(savePath, bitmap, 50);
+                    //bitmap.Save(savePath);
+                    progress.Invoke(new Action(delegate
+                    {
+                        progress.RefreshView(i + 1, floorCount + 1, this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height);
+                    }));
+                    startFloor++;
                 }
-                if (!Directory.Exists(savePath))
+                catch (Exception ex)
                 {
-                    Directory.CreateDirectory(savePath);
+                    MessageBox.Show("保存出错,请重试","异常", MessageBoxButtons.OK);
                 }
-                savePath += startFloor + homeNumber + strExt;
-                bitmap.Save(savePath);
-                progress.Invoke(new Action(delegate
-                {
-                    progress.RefreshView(i + 1, floorCount + 1, this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height);
-                }));
-                startFloor++;
             }
             progress.Close();
             //pbImgView.Image.Save(strSavePath);
+        }
+
+        private void SaveImage2File(string path, Image destImage, int quality, string mimeType = "image/jpeg")
+        {
+            if (quality <= 0 || quality > 100) quality = 95;
+            //创建保存的文件夹
+            FileInfo fileInfo = new FileInfo(path);
+            if (!Directory.Exists(fileInfo.DirectoryName))
+            {
+                Directory.CreateDirectory(fileInfo.DirectoryName);
+            }
+
+            EncoderParameters ep = new EncoderParameters(2);
+            long[] qy = new long[1];
+            qy[0] = 90;//设置压缩的比例1-100
+            EncoderParameter eParam1 = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, qy);
+            EncoderParameter eParam2 = new EncoderParameter(System.Drawing.Imaging.Encoder.Compression, 5);
+            ep.Param[0] = eParam1;
+            ep.Param[1] = eParam2;
+
+            ImageCodecInfo myImageCodecInfo = GetEncoderInfo(mimeType);
+            CompressImage(destImage, path);
+            //destImage.Save(path, myImageCodecInfo, ep);
+        }
+
+        /// <summary>
+        /// 无损压缩图片
+        /// </summary>
+        /// <param name="sFile">原图片地址</param>
+        /// <param name="dFile">压缩后保存图片地址</param>
+        /// <param name="flag">压缩质量（数字越小压缩率越高）1-100</param>
+        /// <param name="size">压缩后图片的最大大小</param>
+        /// <param name="sfsc">是否是第一次调用</param>
+        /// <returns></returns>
+        public bool CompressImage(Image sFile, string dFile, int flag = 90, int size = 300, bool sfsc = true)
+        {
+            ////如果是第一次调用，原始图像的大小小于要压缩的大小，则直接复制文件，并且返回true
+            //FileInfo firstFileInfo = new FileInfo(sFile);
+            //if (sfsc == true && firstFileInfo.Length < size * 1024)
+            //{
+            //    firstFileInfo.CopyTo(dFile);
+            //    return true;
+            //}
+            Image iSource = sFile;
+            ImageFormat tFormat = iSource.RawFormat;
+            int dHeight = iSource.Height / 2;
+            int dWidth = iSource.Width / 2;
+            int sW = 0, sH = 0;
+            //按比例缩放
+            Size tem_size = new Size(iSource.Width, iSource.Height);
+            if (tem_size.Width > dHeight || tem_size.Width > dWidth)
+            {
+                if ((tem_size.Width * dHeight) > (tem_size.Width * dWidth))
+                {
+                    sW = dWidth;
+                    sH = (dWidth * tem_size.Height) / tem_size.Width;
+                }
+                else
+                {
+                    sH = dHeight;
+                    sW = (tem_size.Width * dHeight) / tem_size.Height;
+                }
+            }
+            else
+            {
+                sW = tem_size.Width;
+                sH = tem_size.Height;
+            }
+
+            Bitmap ob = new Bitmap(dWidth, dHeight);
+            Graphics g = Graphics.FromImage(ob);
+
+            g.Clear(Color.WhiteSmoke);
+            g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
+            g.DrawImage(iSource, new Rectangle((dWidth - sW) / 2, (dHeight - sH) / 2, sW, sH), 0, 0, iSource.Width, iSource.Height, GraphicsUnit.Pixel);
+
+            g.Dispose();
+
+            //以下代码为保存图片时，设置压缩质量
+            EncoderParameters ep = new EncoderParameters();
+            long[] qy = new long[1];
+            qy[0] = flag;//设置压缩的比例1-100
+            EncoderParameter eParam = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, qy);
+            ep.Param[0] = eParam;
+
+            try
+            {
+                ImageCodecInfo[] arrayICI = ImageCodecInfo.GetImageEncoders();
+                ImageCodecInfo jpegICIinfo = null;
+                for (int x = 0; x < arrayICI.Length; x++)
+                {
+                    if (arrayICI[x].FormatDescription.Equals("JPEG"))
+                    {
+                        jpegICIinfo = arrayICI[x];
+                        break;
+                    }
+                }
+                if (jpegICIinfo != null)
+                {
+                    ob.Save(dFile, jpegICIinfo, ep);//dFile是压缩后的新路径
+                    FileInfo fi = new FileInfo(dFile);
+                    if (fi.Length > 1024 * size)
+                    {
+                        flag = flag - 10;
+                        CompressImage(sFile, dFile, flag, size, false);
+                    }
+                }
+                else
+                {
+                    ob.Save(dFile, tFormat);
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                iSource.Dispose();
+                ob.Dispose();
+            }
+        }
+
+        private ImageCodecInfo GetEncoderInfo(String mimeType)
+        {
+            int j;
+            ImageCodecInfo[] encoders;
+            encoders = ImageCodecInfo.GetImageEncoders();
+            for (j = 0; j < encoders.Length; ++j)
+            {
+                if (encoders[j].MimeType == mimeType)
+                    return encoders[j];
+            }
+            return null;
         }
 
         private void InitFileList()
