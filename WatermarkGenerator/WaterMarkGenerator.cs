@@ -168,7 +168,7 @@ namespace WatermarkGenerator
             g.DrawString(viewStr, new Font("黑体", whiteRect.Width / 21), Brushes.Black, blueRect.Width / 7, whiteRect.Y + blueRect.Height / 4 + ((whiteRect.Width / 21) * (4 + coefficient)));
 
             //黄色圆点
-            g.FillEllipse(Brushes.Yellow, new Rectangle(imgWidth / 13, imgHeight - imgHeight / 4 - imgHeight / 60, blueRectWidth / 25, blueRectWidth / 25));
+            g.FillEllipse(Brushes.Yellow, new Rectangle(blueRectX + blueRectWidth / 13, blueRectY + (blueRectHeight/ 4), blueRectWidth / 25, blueRectWidth / 25));
             g.Dispose();
             return bitmap;
         }
